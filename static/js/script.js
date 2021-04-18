@@ -22,6 +22,7 @@ function showDonnaResult(maleNames){
 
     if (nome){
 		// console.log(maleNames);
+		nome = nome.trim();
 
 		if (!maleNames.includes(nome.toLowerCase())){
         	res.firstChild.textContent = nome + ' è troia';
