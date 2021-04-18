@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>DONNE</title>
+{% endblock %}
+
+{% block nav_btn %}
+<!-- <a class="nav-link active" aria-current="page" href="#">Home</a> -->
+<a class="nav-link" href="/">Home</a>
+{% endblock %}
+
+{% block body %}
+<main class="px-3" style="margin-top: 50px;">
+	<h1>Benvenuto nell'analizzatore di donne</h1>
+	<!-- <p class="lead">Inserisci un nome di una donna per vedere se è troia</p> -->
+	<!-- <div style="margin-left: auto; margin-right: auto;">
+		<input class="form-control" placeholder="Inserisci il nome di una donna" style="width: 30%; margin-left: auto; margin-right: auto;">
+	</div> -->
+
+	<form class="row g-3 justify-content-center mt-3">
+		<div class="col-4">
+		  <input name="donna" type="text" class="form-control" placeholder="Inserisci il nome di una donna">
+		</div>
+		<div class="col-auto">
+		  <button type="submit" class="btn btn-primary mb-3">Scopri se è troia!</button>
+		</div>
+		
+		{% if result %}
+			<p style="font-size: 20pt; font-weight: bold;">{{ result }}</p>
+		{% endif %}
+	</form>
+</main>
+
+<div style="text-align: center; margin-top: 20px; font-style: italic; font-size: 8pt;">
+	<p>Lo sviluppatore si dissocia totalmente da questa pagina</p>
+	<p>No dai seriamente è no scherzo, ngioco, pe fa ride</p>
+</div>
+{% endblock %}

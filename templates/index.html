@@ -2,14 +2,12 @@
 
 {% block head %}
 <title>Pilota's home</title>
+<script src="static/js/script.js"></script>
 {% endblock %}
 
 {% block nav_btn %}
-<nav class="nav nav-masthead justify-content-center float-md-end text-white">
-	<!-- <a class="nav-link active" aria-current="page" href="#">Home</a> -->
-	<a class="nav-link" href="http://vps617912.ovh.net:81">Codiad</a>
-	<!-- <a class="nav-link" href="#">Contact</a> -->
-</nav>
+<!-- <a class="nav-link active" aria-current="page" href="#">Home</a> -->
+<a class="nav-link" href="http://vps617912.ovh.net:81">Codiad</a>
 {% endblock %}
 
 {% block body %}
@@ -23,6 +21,7 @@
 </main>
 
 <div style="text-align: center; margin-top: 20px;">
-	<script async src="https://telegram.org/js/telegram-widget.js?14" data-telegram-login="PrivateTestBot" data-size="large" data-auth-url="http://vps617912.ovh.net/ippodromo/" data-request-access="write"></script>
+	<!-- <script async src="https://telegram.org/js/telegram-widget.js?14" data-telegram-login="PrivateTestBot" data-size="large" data-auth-url="/ippodromo" data-request-access="write"></script> -->
+	<script async src="https://telegram.org/js/telegram-widget.js?14" data-telegram-login="PrivateTestBot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
 </div>
 {% endblock %}

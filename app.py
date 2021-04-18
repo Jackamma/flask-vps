@@ -11,5 +11,20 @@ def ippo():
 	first_name = request.args.get('first_name')
 	return render_template('ippo.html', first_name=first_name)
 
+@app.route("/donne/")
+def donne():
+	donna = request.args.get('donna')
+	result = False
+	if donna:
+		result = donna + ' è troia'
+	return render_template('donne.html', result=result)
+
+# @app.route("/donne/<nome>")
+# def donneResponse(nome):
+# 	testo = False
+# 	if nome:
+# 		testo = nome + ' è troia'
+# 	return render_template('donne.html', result=testo)
+
 if __name__ == "__main__":
 	app.run(debug=True)
