@@ -19,15 +19,17 @@
 
 	<form class="row g-3 justify-content-center mt-3">
 		<div class="col-4">
-		  <input name="donna" type="text" class="form-control" placeholder="Nome">
+		  <input name="donna" type="text" class="form-control" placeholder="Nome" id="nomeDonna">
 		</div>
 		<div class="col-auto">
-		  <button type="submit" class="btn btn-primary mb-3">Scopri se è troia!</button>
+		  <button id="donneBut" type="button" class="btn btn-primary mb-3" onclick="showDonnaResult({{ maleNames }})">Scopri se è troia!</button>
 		</div>
+
+		<p id="resultDonna" style="font-size: 20pt; font-weight: bold;" hidden>test</p>
 		
-		{% if result %}
-			<p style="font-size: 20pt; font-weight: bold;">{{ result }}</p>
-		{% endif %}
+		<!-- {% if result %}
+			<p style="font-size: 20pt; font-weight: bold;" hidden>{{ result }}</p>
+		{% endif %} -->
 	</form>
 </main>
 
@@ -35,4 +37,6 @@
 	<p>Lo sviluppatore si dissocia totalmente da questa pagina</p>
 	<p>No dai seriamente è no scherzo, ngioco, pe fa ride</p>
 </div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 {% endblock %}

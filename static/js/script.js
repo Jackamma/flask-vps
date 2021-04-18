@@ -1,3 +1,39 @@
+// console.log('Loaded!');
+
+var input = document.getElementById("nomeDonna");
+
+// Execute a function when the user releases a key on the keyboard
+input.addEventListener("keydown", function(event) {
+  // Number 13 is the "Enter" key on the keyboard
+  if (event.key === 'Enter') {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Trigger the button element with a click
+    document.getElementById("donneBut").click();
+  }
+});
+
+function showDonnaResult(maleNames){
+    // console.log('clicked!');
+    var nome = document.getElementById('nomeDonna').value;
+    var res = document.getElementById('resultDonna');
+
+    // console.log('Nome = '+nome);
+
+    if (nome){
+		// console.log(maleNames);
+
+		if (!maleNames.includes(nome.toLowerCase())){
+        	res.firstChild.textContent = nome + ' è troia';
+		} else {
+			res.firstChild.textContent = nome + ' NON è troia';
+		}
+        res.removeAttribute('hidden');
+    } else {
+        res.setAttribute('hidden', 'true');
+    }
+}
+
 function sortObject(obj) {
     return Object.keys(obj).sort().reduce(function (result, key) {
         result[key] = obj[key];
