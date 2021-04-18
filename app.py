@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request
-import peewee
+import peewee, os
 app = Flask(__name__)
 
 db = peewee.SqliteDatabase(
