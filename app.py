@@ -19,7 +19,7 @@ def donne():
 		result = donna + ' è troia'
 	return render_template('donne.html', result=result)
 
-# @app.route("/donne/<nome>")
+# @app.route("/donne/<nome>") 
 # def donneResponse(nome):
 # 	testo = False
 # 	if nome:
