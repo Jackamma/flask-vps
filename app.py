@@ -17,7 +17,7 @@ def donne():
 	donna = request.args.get('donna')
 	result = False
 	if donna:
-		result = donna + ' è troia'
+		result = donna + u' è troia'
 	return render_template('donne.html', result=result)
 
 # @app.route("/donne/<nome>") 
