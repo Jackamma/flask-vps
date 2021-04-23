@@ -49,11 +49,11 @@ def ippo():
 		dataArray.append(i+'='+request.args[i])
 	dataArray.sort()
 	hashString = '\n'.join(dataArray)
-	secret = bot_token.encode()
+	secret = bot_token.encode('utf-8')
 	# print('---------------------',type(secret),'--------------------')
-	API_SECRET = str(sha256(secret)).encode()
+	API_SECRET = str(sha256(secret)).encode('utf-8')
 	# print(API_SECRET)
-	message = hashString.encode()
+	message = hashString.encode('utf-8')
 	signature = hmac.new(
 		API_SECRET,
 		msg=message,
