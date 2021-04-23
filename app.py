@@ -58,7 +58,8 @@ def ippo():
 		API_SECRET,
 		msg=message,
 		digestmod=sha256
-	).hexdigest()
+	)
+	signature = hex(signature)
 	# print(signature)
 	# Aggiungere verifica hash telegram
 	first_name = request.args.get('first_name')
