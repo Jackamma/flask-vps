@@ -23,7 +23,10 @@ class visits(peewee.Model):
 
 visits.create_table()
 
-bot_token = open('token.txt').read()
+bot_token = open(os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        'token.txt'
+    )).read()
 
 @app.route("/")
 def home():
