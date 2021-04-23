@@ -58,12 +58,16 @@ def ippo():
 		API_SECRET,
 		msg=message,
 		digestmod=sha256
-	)
-	signature = hex(signature)
+	).hexdigest()
+
+	result=hmac.compare_digest(signature, request.args.get('hash'))
+
+	# print(signature)
+	# signature = hex(signature)
 	# print(signature)
 	# Aggiungere verifica hash telegram
 	first_name = request.args.get('first_name')
-	return render_template('ippo.html', first_name=hashString, newHash=signature)
+	return render_template('ippo.html', hash=request.args.get('hash'), checkHash=signature, result=result)
 
 
 
