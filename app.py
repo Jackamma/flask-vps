@@ -43,11 +43,17 @@ def home():
 
 @app.route("/ippodromo/")
 def ippo():
+	dataArray = []
+	for i in request.args:
+		# print(request.args[i])
+		dataArray.append(i+'='+request.args[i])
+	dataArray.sort()
+	hashString = '\n'.join(dataArray)
 	secret = bot_token.encode()
 	# print('---------------------',type(secret),'--------------------')
 	API_SECRET = str(sha256(secret)).encode()
 	# print(API_SECRET)
-	message = 'test'.encode()
+	message = hashString.encode()
 	signature = hmac.new(
 		API_SECRET,
 		msg=message,
@@ -56,7 +62,7 @@ def ippo():
 	# print(signature)
 	# Aggiungere verifica hash telegram
 	first_name = request.args.get('first_name')
-	return render_template('ippo.html', first_name=request.args, newHash=signature)
+	return render_template('ippo.html', first_name=hashString, newHash=signature)
 
 
 
