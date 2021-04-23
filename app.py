@@ -60,7 +60,7 @@ def ippo():
 		digestmod=sha256
 	).hexdigest()
 
-	result=hmac.compare_digest(signature, request.args.get('hash'))
+	result=hmac.compare_digest(signature, request.args.get('hash').encode())
 
 	# print(signature)
 	# signature = hex(signature)
