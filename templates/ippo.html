@@ -10,7 +10,13 @@
 
 {% block body %}
 <main class="px-3" style="margin-top: 50px;">
-    <h1>{{ first_name }}, sei nell'ippodromo!</h1>
-    <p class="lead">Iniziamo?</p>
+    <h1>Benvenuto nell'ippodromo</h1>
+    <p class="lead">Questa pagina è in costruzione :)</p>
+    <p>{{ first_name }}</p>
+    <p>{{ newHash }}</p>
 </main>
+<div style="text-align: center; margin-top: 20px;">
+	<!-- <script async src="https://telegram.org/js/telegram-widget.js?14" data-telegram-login="PrivateTestBot" data-size="large" data-auth-url="/ippodromo" data-request-access="write"></script> -->
+	<script async src="https://telegram.org/js/telegram-widget.js?14" data-telegram-login="PrivateTestBot" data-size="large" data-auth-url="http://vps617912.ovh.net/ippodromo/" data-request-access="write"></script>
+</div>
 {% endblock %}

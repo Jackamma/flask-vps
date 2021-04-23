@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request
-import peewee, os
+import peewee, os, hmac, codecs
+from hashlib import sha256
+
 app = Flask(__name__)
 
 db = peewee.SqliteDatabase(
@@ -21,6 +23,8 @@ class visits(peewee.Model):
 
 visits.create_table()
 
+bot_token = open('token.txt').read()
+
 @app.route("/")
 def home():
 	try:
@@ -36,9 +40,22 @@ def home():
 
 @app.route("/ippodromo/")
 def ippo():
+	secret = bot_token.encode()
+	# print('---------------------',type(secret),'--------------------')
+	API_SECRET = str(sha256(secret)).encode()
+	# print(API_SECRET)
+	message = 'test'.encode()
+	signature = hmac.new(
+		API_SECRET,
+		msg=message,
+		digestmod=sha256
+	).hexdigest()
+	# print(signature)
 	# Aggiungere verifica hash telegram
 	first_name = request.args.get('first_name')
-	return render_template('ippo.html', first_name=first_name)
+	return render_template('ippo.html', first_name=request.args, newHash=signature)
+
+
 
 @app.route("/donne/")
 def donne():
