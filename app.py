@@ -45,15 +45,17 @@ def home():
 def ippo():
 	if request.args.get('hash'):
 		dataArray = []
+		# print(request.args)
 		for i in request.args:
-			# print(request.args[i])
-			dataArray.append(i+'='+request.args[i])
+			strToAdd = i+'='+request.args[i]
+			if strToAdd not in dataArray:
+				dataArray.append(i+'='+request.args[i])
+				# print(strToAdd)
 		dataArray.sort()
 		hashString = '\n'.join(dataArray)
+		# print(hashString)
 		secret = bot_token.encode('utf-8')
-		# print('---------------------',type(secret),'--------------------')
 		API_SECRET = str(sha256(secret)).encode('utf-8')
-		# print(API_SECRET)
 		message = hashString.encode('utf-8')
 		signature = hmac.new(
 			API_SECRET,
@@ -64,9 +66,9 @@ def ippo():
 		result=hmac.compare_digest(signature.encode(), request.args.get('hash').encode())
 		tHash = request.args.get('hash')
 	else:
-		tHash = None
-		signature = None
-		result = None
+		tHash = ""
+		signature = "Per favore, esegui l'accesso a Telegram"
+		result = ""
 
 	# print(signature)
 	# signature = hex(signature)
