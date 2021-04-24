@@ -43,31 +43,37 @@ def home():
 
 @app.route("/ippodromo/")
 def ippo():
-	dataArray = []
-	for i in request.args:
-		# print(request.args[i])
-		dataArray.append(i+'='+request.args[i])
-	dataArray.sort()
-	hashString = '\n'.join(dataArray)
-	secret = bot_token.encode('utf-8')
-	# print('---------------------',type(secret),'--------------------')
-	API_SECRET = str(sha256(secret)).encode('utf-8')
-	# print(API_SECRET)
-	message = hashString.encode('utf-8')
-	signature = hmac.new(
-		API_SECRET,
-		msg=message,
-		digestmod=sha256
-	).hexdigest()
+	if request.args.get('hash'):
+		dataArray = []
+		for i in request.args:
+			# print(request.args[i])
+			dataArray.append(i+'='+request.args[i])
+		dataArray.sort()
+		hashString = '\n'.join(dataArray)
+		secret = bot_token.encode('utf-8')
+		# print('---------------------',type(secret),'--------------------')
+		API_SECRET = str(sha256(secret)).encode('utf-8')
+		# print(API_SECRET)
+		message = hashString.encode('utf-8')
+		signature = hmac.new(
+			API_SECRET,
+			msg=message,
+			digestmod=sha256
+		).hexdigest()
 
-	result=hmac.compare_digest(signature, request.args.get('hash').encode())
+		result=hmac.compare_digest(signature.encode(), request.args.get('hash').encode())
+		tHash = request.args.get('hash')
+	else:
+		tHash = None
+		signature = None
+		result = None
 
 	# print(signature)
 	# signature = hex(signature)
 	# print(signature)
 	# Aggiungere verifica hash telegram
-	first_name = request.args.get('first_name')
-	return render_template('ippo.html', hash=request.args.get('hash'), checkHash=signature, result=result)
+	# first_name = request.args.get('first_name')
+	return render_template('ippo.html', hash=tHash, checkHash=signature, result=result)
 
 
 
