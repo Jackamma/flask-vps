@@ -50,9 +50,9 @@ def ippo():
 		# print(request.args)
 		for i in request.args:
 			strToAdd = i+'='+request.args[i]
-			if strToAdd not in dataArray:
+			if strToAdd not in dataArray and i != 'hash':
 				dataArray.append(i+'='+request.args[i])
-				# print(strToAdd)
+				print(strToAdd)
 		dataArray.sort()
 		# print(dataArray)
 		hashString = '\n'.join(dataArray)
