@@ -28,6 +28,8 @@ bot_token = open(os.path.join(
         'token.txt'
     )).read()
 
+bot_token = bot_token.strip()
+
 @app.route("/")
 def home():
 	try:
@@ -52,16 +54,20 @@ def ippo():
 				dataArray.append(i+'='+request.args[i])
 				# print(strToAdd)
 		dataArray.sort()
+		# print(dataArray)
 		hashString = '\n'.join(dataArray)
-		# print(hashString)
-		secret = bot_token.encode('utf-8')
-		API_SECRET = str(sha256(secret)).encode('utf-8')
-		message = hashString.encode('utf-8')
+		# print('"'+hashString+'"')
+		secret = bot_token.encode()
+		# API_SECRET = str(sha256(secret)).encode('utf-8')
+		API_SECRET = sha256(secret).digest()
+		# print(API_SECRET)
+		message = hashString.encode()
 		signature = hmac.new(
 			API_SECRET,
 			msg=message,
 			digestmod=sha256
 		).hexdigest()
+		# print('signature = '+signature)
 
 		result=hmac.compare_digest(signature.encode(), request.args.get('hash').encode())
 		tHash = request.args.get('hash')
