@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request
-import peewee, os, hmac, codecs
+import peewee, os, hmac, time
 from hashlib import sha256
 
 app = Flask(__name__)
@@ -45,43 +45,40 @@ def home():
 
 @app.route("/ippodromo/")
 def ippo():
+	isDataValid = False
+	isDataExpired = False
 	if request.args.get('hash'):
 		dataArray = []
-		# print(request.args)
 		for i in request.args:
 			strToAdd = i+'='+request.args[i]
 			if strToAdd not in dataArray and i != 'hash':
 				dataArray.append(i+'='+request.args[i])
 				print(strToAdd)
 		dataArray.sort()
-		# print(dataArray)
 		hashString = '\n'.join(dataArray)
-		# print('"'+hashString+'"')
 		secret = bot_token.encode()
-		# API_SECRET = str(sha256(secret)).encode('utf-8')
 		API_SECRET = sha256(secret).digest()
-		# print(API_SECRET)
 		message = hashString.encode()
 		signature = hmac.new(
 			API_SECRET,
 			msg=message,
 			digestmod=sha256
 		).hexdigest()
-		# print('signature = '+signature)
 
-		result=hmac.compare_digest(signature.encode(), request.args.get('hash').encode())
+		isDataValid = hmac.compare_digest(signature.encode(), request.args.get('hash').encode())
 		tHash = request.args.get('hash')
-	else:
-		tHash = ""
-		signature = "Per favore, esegui l'accesso a Telegram"
-		result = ""
 
-	# print(signature)
-	# signature = hex(signature)
-	# print(signature)
-	# Aggiungere verifica hash telegram
-	# first_name = request.args.get('first_name')
-	return render_template('ippo.html', hash=tHash, checkHash=signature, result=result)
+		unix_time_now = int(time.time())
+		unix_time_auth_date = int(request.args.get('auth_date'))
+
+		if unix_time_now - unix_time_auth_date > 86400:
+			isDataValid = False
+			isDataExpired = True
+		# print(signature, '=', tHash)
+
+	# print('isDataValid = '+str(isDataValid))
+	first_name = request.args.get('first_name')
+	return render_template('ippo.html', isDataValid=isDataValid, first_name=first_name, isDataExpired=isDataExpired)
 
 
 

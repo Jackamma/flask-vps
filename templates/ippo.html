@@ -11,13 +11,18 @@
 {% block body %}
 <main class="px-3" style="margin-top: 50px;">
     <h1>Benvenuto nell'ippodromo</h1>
-    <p class="lead">Questa pagina è in costruzione :)</p>
-    <p>{{ hash }}</p>
-    <p>{{ checkHash }}</p>
-    <p>{{ result }}</p>
+    {% if not isDataValid %}
+        <p class="lead">Esegui il login da Telegram :)</p>
+        {% if not isDataValid %}
+            <p><i>I dati trasmessi da Telegram sono troppo vecchi :(</i></p>
+        {% endif %}
+        <div style="text-align: center; margin-top: 20px;">
+            <!-- <script async src="https://telegram.org/js/telegram-widget.js?14" data-telegram-login="PrivateTestBot" data-size="large" data-auth-url="/ippodromo" data-request-access="write"></script> -->
+            <script async src="https://telegram.org/js/telegram-widget.js?14" data-telegram-login="PrivateTestBot" data-size="large" data-auth-url="vps617912.ovh.net/ippodromo" data-request-access="write"></script>
+        </div>
+    {% else %}
+        <p class="lead">Ciao {{ first_name }}, pronto a giocare?</p>
+    {% endif %}
 </main>
-<div style="text-align: center; margin-top: 20px;">
-	<!-- <script async src="https://telegram.org/js/telegram-widget.js?14" data-telegram-login="PrivateTestBot" data-size="large" data-auth-url="/ippodromo" data-request-access="write"></script> -->
-	<script async src="https://telegram.org/js/telegram-widget.js?14" data-telegram-login="PrivateTestBot" data-size="large" data-auth-url="http://vps617912.ovh.net/ippodromo" data-request-access="write"></script>
-</div>
+
 {% endblock %}
