@@ -13,7 +13,7 @@
     <h1>Benvenuto nell'ippodromo</h1>
     {% if not isDataValid %}
         <p class="lead">Esegui il login da Telegram :)</p>
-        {% if not isDataValid %}
+        {% if isDataExpired %}
             <p><i>I dati trasmessi da Telegram sono troppo vecchi :(</i></p>
         {% endif %}
         <div style="text-align: center; margin-top: 20px;">
