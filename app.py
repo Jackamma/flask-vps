@@ -7,9 +7,9 @@ app = Flask(__name__)
 
 db = peewee.SqliteDatabase(
 	os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        'stats.db'
-    )
+		os.path.dirname(os.path.realpath(__file__)),
+		'stats.db'
+	)
 )
 
 class visits(peewee.Model):
@@ -24,9 +24,9 @@ class visits(peewee.Model):
 visits.create_table()
 
 bot_token = open(os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        'token.txt'
-    )).read()
+		os.path.dirname(os.path.realpath(__file__)),
+		'token.txt'
+	)).read()
 
 bot_token = bot_token.strip()
 
@@ -43,8 +43,10 @@ def home():
 	# print(n)
 	return render_template('index.html')
 
+onlineUsers = {}
 @app.route("/ippodromo/")
 def ippo():
+	global onlineUsers
 	isDataValid = False
 	isDataExpired = False
 	if request.args.get('hash'):
@@ -53,7 +55,7 @@ def ippo():
 			strToAdd = i+'='+request.args[i]
 			if strToAdd not in dataArray and i != 'hash':
 				dataArray.append(i+'='+request.args[i])
-				print(strToAdd)
+				# print(strToAdd)
 		dataArray.sort()
 		hashString = '\n'.join(dataArray)
 		secret = bot_token.encode()
@@ -78,9 +80,24 @@ def ippo():
 
 	# print('isDataValid = '+str(isDataValid))
 	first_name = request.args.get('first_name')
-	return render_template('ippo.html', isDataValid=isDataValid, first_name=first_name, isDataExpired=isDataExpired)
+	if isDataValid and not isDataExpired:
+		onlineUsers[request.args.get('id')] = first_name
+	nOnlineUsers = len(onlineUsers)
+	return render_template('ippo.html', isDataValid=isDataValid, first_name=first_name, isDataExpired=isDataExpired, nOnlineUsers=nOnlineUsers)
 
-
+@app.route('/onlinedata',methods=['GET','POST'])
+def checkOnline():
+	global onlineUsers
+	if request.method=='POST':
+		res = request.get_json()
+		onlineUsers.pop(res['id'])
+		print(res['id'])
+		print(onlineUsers)
+		# for i in request.data:
+		# 	print(request.data)
+		return '{"Content-Type": "application/json","test":"test!!"}'
+	else:    
+		return render_template('index.html')
 
 @app.route("/donne/")
 def donne():

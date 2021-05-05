@@ -3,73 +3,83 @@
 var input = document.getElementById("nomeDonna");
 
 // Execute a function when the user releases a key on the keyboard
-input.addEventListener("keydown", function(event) {
-  // Number 13 is the "Enter" key on the keyboard
-  if (event.key === 'Enter') {
-    // Cancel the default action, if needed
-    event.preventDefault();
-    // Trigger the button element with a click
-    document.getElementById("donneBut").click();
-  }
-});
+if (input){
+	input.addEventListener("keydown", function(event) {
+		// Number 13 is the "Enter" key on the keyboard
+		if (event.key === 'Enter') {
+			// Cancel the default action, if needed
+			event.preventDefault();
+			// Trigger the button element with a click
+			document.getElementById("donneBut").click();
+		}
+	});
+}
 
 function showDonnaResult(maleNames){
-    // console.log('clicked!');
-    var nome = document.getElementById('nomeDonna').value;
-    var res = document.getElementById('resultDonna');
+		// console.log('clicked!');
+		var nome = document.getElementById('nomeDonna').value;
+		var res = document.getElementById('resultDonna');
 
-    // console.log('Nome = '+nome);
+		// console.log('Nome = '+nome);
 
-    if (nome){
+		if (nome){
 		// console.log(maleNames);
 		nome = nome.trim();
 
 		if (!maleNames.includes(nome.toLowerCase())){
-        	res.firstChild.textContent = nome + ' è troia';
+					res.firstChild.textContent = nome + ' è troia';
 		} else {
 			res.firstChild.textContent = nome + ' NON è troia';
 		}
-        res.removeAttribute('hidden');
-    } else {
-        res.setAttribute('hidden', 'true');
-    }
+				res.removeAttribute('hidden');
+		} else {
+				res.setAttribute('hidden', 'true');
+		}
 }
 
-function sortObject(obj) {
-    return Object.keys(obj).sort().reduce(function (result, key) {
-        result[key] = obj[key];
-        return result;
-    }, {});
-}
+// var opts = {
+// 	method: 'GET',      
+// 	headers: {}
+// };
+// fetch('/get-data', opts).then(function (response) {
+// 	return response.json();
+// })
+// .then(function (body) {
+// 	console.log(body);
+// });
 
-function onTelegramAuth(data){
-    var arrayData = sortObject(data);
-    var text = '';
-    for (var k in arrayData){
-        console.log(k);
-        text += k + '=' + arrayData[k]+'\n';
-    }
-    text = text.replace(/\\n$/, '');
-    console.log(text);
+const urlParams = new URLSearchParams(window.location.search);
 
-    $secret_key = hash('sha256', BOT_TOKEN, true);
-    
-}
+// if (urlParams.get('id')){
+// 	fetch('/onlinedata', {
+// 		method: 'POST', // or 'PUT'
+// 		headers: { 'Content-Type': 'application/json' },
+// 		body: JSON.stringify({'id':urlParams.get('id')}),
+// 	})
+// 	.then(response => response.json())
+// 	.then(data => {
+// 		console.log('Success:', data);
+// 	})
+// 	.catch((error) => {
+// 		console.error('Error:', error);
+// 	});
+// }
 
-
-function checkTelegramData(data, token){
-  const secret = crypto.createHash('sha256').update(token).digest();
-  let array = [];
-
-  for (let key in data){
-    if (key != 'hash') {
-      array.push(key + '=' + data[key]);
-    }
-  }
-  const check_hash = crypto
-    .createHmac('sha256', secret)
-    .update(array.sort().join('\n'))
-    .digest('hex');
-
-  return check_hash == data.hash;
-}
+window.addEventListener("beforeunload", function(event) {
+	if (urlParams.get('id')){
+		fetch('/onlinedata', {
+			method: 'POST', // or 'PUT'
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({'id':urlParams.get('id')}),
+		})
+		.then(response => response.json())
+		.then(data => {
+			console.log('Success:', data);
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+		});
+		// Notification.requestPermission()
+		// new Notification('test');
+	}
+});

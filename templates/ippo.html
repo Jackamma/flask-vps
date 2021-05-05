@@ -2,6 +2,7 @@
 
 {% block head %}
 <title>Pilota's ippodromo</title>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 {% endblock %}
 
 {% block nav_btn %}
@@ -22,6 +23,7 @@
         </div>
     {% else %}
         <p class="lead">Ciao {{ first_name }}, pronto a giocare?</p>
+        <p><b>Giocatori online: {{ nOnlineUsers }}</b></p>
     {% endif %}
 </main>
 
