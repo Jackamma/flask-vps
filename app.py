@@ -2,8 +2,11 @@
 from flask import Flask, render_template, request
 import peewee, os, hmac, time
 from hashlib import sha256
+from flask_socketio import SocketIO, send, emit
 
 app = Flask(__name__)
+
+socketio = SocketIO(app, cors_allowed_origins='*')
 
 db = peewee.SqliteDatabase(
 	os.path.join(
@@ -44,6 +47,31 @@ def home():
 	return render_template('index.html')
 
 onlineUsers = {}
+
+@socketio.on('connect')
+def sockConnect():
+	# print('\n+++++++++++', 'connesso', '+++++++++++\n')
+	# send(msg, broadcast=True)
+	# print(request.args.get('id'))
+	if request.args.get('id'):
+		onlineUsers[request.args.get('id')] = request.args.get('first_name')
+		emit('updatePlayers', onlineUsers, broadcast=True)
+		# print('\n+++++++++++', onlineUsers, '+++++++++++\n')
+
+@socketio.on('disconnect')
+def sockDisconnect():
+	# print('\n+++++++++++', 'disconnesso', '+++++++++++\n')
+	if request.args.get('id'):
+		onlineUsers.pop(request.args.get('id'))
+		emit('updatePlayers', onlineUsers, broadcast=True)
+		# print('+++++++++++', onlineUsers, '+++++++++++')
+
+# @socketio.on('updatePlayers')
+# def handleMessage(players):
+# 	print('players: ' + str(players))
+# 	print('\n+++++++++++', 'update', '+++++++++++\n')
+# 	send(players, broadcast=True)
+
 @app.route("/ippodromo/")
 def ippo():
 	global onlineUsers
@@ -78,12 +106,15 @@ def ippo():
 			isDataExpired = True
 		# print(signature, '=', tHash)
 
+	isDataValid = True
+	isDataExpired = False
+
 	# print('isDataValid = '+str(isDataValid))
 	first_name = request.args.get('first_name')
-	if isDataValid and not isDataExpired:
-		onlineUsers[request.args.get('id')] = first_name
-	nOnlineUsers = len(onlineUsers)
-	return render_template('ippo.html', isDataValid=isDataValid, first_name=first_name, isDataExpired=isDataExpired, nOnlineUsers=nOnlineUsers)
+	# if isDataValid and not isDataExpired:
+	# 	onlineUsers[request.args.get('id')] = first_name
+	# nOnlineUsers = len(onlineUsers)
+	return render_template('ippo.html', isDataValid=isDataValid, first_name=first_name, isDataExpired=isDataExpired)
 
 @app.route('/onlinedata',methods=['GET','POST'])
 def checkOnline():
@@ -91,8 +122,8 @@ def checkOnline():
 	if request.method=='POST':
 		res = request.get_json()
 		onlineUsers.pop(res['id'])
-		print(res['id'])
-		print(onlineUsers)
+		# print(res['id'])
+		# print(onlineUsers)
 		# for i in request.data:
 		# 	print(request.data)
 		return '{"Content-Type": "application/json","test":"test!!"}'

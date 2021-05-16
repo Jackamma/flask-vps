@@ -48,7 +48,7 @@ function showDonnaResult(maleNames){
 // 	console.log(body);
 // });
 
-const urlParams = new URLSearchParams(window.location.search);
+// const urlParams = new URLSearchParams(window.location.search);
 
 // if (urlParams.get('id')){
 // 	fetch('/onlinedata', {
@@ -65,21 +65,19 @@ const urlParams = new URLSearchParams(window.location.search);
 // 	});
 // }
 
-window.addEventListener("beforeunload", function(event) {
-	if (urlParams.get('id')){
-		fetch('/onlinedata', {
-			method: 'POST', // or 'PUT'
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({'id':urlParams.get('id')}),
-		})
-		.then(response => response.json())
-		.then(data => {
-			console.log('Success:', data);
-		})
-		.catch((error) => {
-			console.error('Error:', error);
-		});
-		// Notification.requestPermission()
-		// new Notification('test');
-	}
-});
+// window.addEventListener("beforeunload", function(event) {
+// 	if (urlParams.get('id')){
+// 		fetch('/onlinedata', {
+// 			method: 'POST', // or 'PUT'
+// 			headers: { 'Content-Type': 'application/json' },
+// 			body: JSON.stringify({'id':urlParams.get('id')}),
+// 		})
+// 		.then(response => response.json())
+// 		.then(data => {
+// 			console.log('Success:', data);
+// 		})
+// 		.catch((error) => {
+// 			console.error('Error:', error);
+// 		});
+// 	}
+// });

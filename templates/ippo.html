@@ -2,7 +2,13 @@
 
 {% block head %}
 <title>Pilota's ippodromo</title>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script type="text/javascript">
+    var isDataValid = '{{ isDataValid }}';
+    var isDataExpired = '{{ isDataExpired }}';
+</script>
+<script src="{{ url_for('static', filename='js/ippo.js') }}"></script>
 {% endblock %}
 
 {% block nav_btn %}
@@ -23,7 +29,8 @@
         </div>
     {% else %}
         <p class="lead">Ciao {{ first_name }}, pronto a giocare?</p>
-        <p><b>Giocatori online: {{ nOnlineUsers }}</b></p>
+        <p><b>Giocatori online: <span id="nPlayers"></span></b></p>
+        <ul id="players" style="list-style-type: none; padding-left: 0px;"></ul>
     {% endif %}
 </main>
 
