@@ -106,9 +106,6 @@ def ippo():
 			isDataExpired = True
 		# print(signature, '=', tHash)
 
-	isDataValid = True
-	isDataExpired = False
-
 	# print('isDataValid = '+str(isDataValid))
 	first_name = request.args.get('first_name')
 	# if isDataValid and not isDataExpired:
