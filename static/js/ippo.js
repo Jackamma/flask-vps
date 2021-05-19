@@ -28,6 +28,10 @@ $(document).ready(function() {
 		// socket.on('connect', updatePlayers);
 		// socket.on('disconnect', updatePlayers);
 
+		window.addEventListener('beforeunload', function (e) {
+			socket.emit('disconnect');
+		});
+
 		socket.on('updatePlayers', function(players){
 			console.log(players);
 			$("#players").empty();
