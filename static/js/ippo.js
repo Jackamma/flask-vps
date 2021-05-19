@@ -1,13 +1,3 @@
-function updatePlayers(players){
-	console.log(players);
-	$("#players").empty();
-	var i = 0;
-	for (var p in players){
-		$("#players").append('<li>'+players[p]+'</li>');
-		i++;
-	}
-	$("#nPlayers").text(i+'');
-}
 
 $(document).ready(function() {
 
@@ -28,8 +18,17 @@ $(document).ready(function() {
 		// socket.on('connect', updatePlayers);
 		// socket.on('disconnect', updatePlayers);
 
+
+		window.addEventListener('onbeforeunload', function (e) {
+			socket.emit('real_disconnect');
+		});
+
 		window.addEventListener('beforeunload', function (e) {
-			socket.emit('disconnect');
+			socket.emit('real_disconnect');
+		});
+
+		window.addEventListener('unload', function (e) {
+			socket.emit('real_disconnect');
 		});
 
 		socket.on('updatePlayers', function(players){

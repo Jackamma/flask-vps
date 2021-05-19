@@ -58,11 +58,19 @@ def sockConnect():
 		emit('updatePlayers', onlineUsers, broadcast=True)
 		# print('\n+++++++++++', onlineUsers, '+++++++++++\n')
 
+@socketio.on('real_disconnect')
+def realSockDisconnect():
+	curr_id = request.args.get('id')
+	if curr_id and curr_id in onlineUsers:
+		onlineUsers.pop(curr_id)
+		emit('updatePlayers', onlineUsers, broadcast=True)
+
 @socketio.on('disconnect')
 def sockDisconnect():
 	# print('\n+++++++++++', 'disconnesso', '+++++++++++\n')
-	if request.args.get('id'):
-		onlineUsers.pop(request.args.get('id'))
+	curr_id = request.args.get('id')
+	if curr_id and curr_id in onlineUsers:
+		onlineUsers.pop(curr_id)
 		emit('updatePlayers', onlineUsers, broadcast=True)
 		# print('+++++++++++', onlineUsers, '+++++++++++')
 
