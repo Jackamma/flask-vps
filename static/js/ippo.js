@@ -2,9 +2,6 @@
 $(document).ready(function() {
 
     if (isDataValid == 'True'){
-        // socket.on('connect', function() {
-        //     socket.emit('joined', 'User has connected!');
-        // });
 
 		const queryString = window.location.search;
 
@@ -14,22 +11,14 @@ $(document).ready(function() {
 		const first_name = urlParams.get('first_name')
 
 		var socket = io.connect(window.location.origin+'', {query: 'id='+user+'&first_name='+first_name});
-
-		// socket.on('connect', updatePlayers);
-		// socket.on('disconnect', updatePlayers);
-
-
-		window.addEventListener('onbeforeunload', function (e) {
-			socket.emit('real_disconnect');
-		});
-
-		window.addEventListener('beforeunload', function (e) {
-			socket.emit('real_disconnect');
-		});
-
-		window.addEventListener('unload', function (e) {
-			socket.emit('real_disconnect');
-		});
+		  
+		document.addEventListener("visibilitychange", function(){
+			if (document.hidden){
+				socket.emit('real_disconnect');
+			} else {
+				socket.emit('real_connect');
+			}
+		}, false);
 
 		socket.on('updatePlayers', function(players){
 			console.log(players);
@@ -40,7 +29,20 @@ $(document).ready(function() {
 				i++;
 			}
 			$("#nPlayers").text(i+'');
+
+			if (i > 1){
+				$("#startIppo").attr('disabled', false);
+				$("#startIppo").attr('hidden', false);
+			} else {
+				$("#startIppo").attr('disabled', true);
+				$("#startIppo").attr('hidden', true);
+			}
 		});
+
+		// $('#startIppo').on('click', function() {
+		// 	socket.send($('#myMessage').val());
+		// 	$('#myMessage').val('');
+		// });
 
     }
 	
@@ -51,9 +53,6 @@ $(document).ready(function() {
 	// 	console.log('Received message');
 	// });
 
-	// $('#sendbutton').on('click', function() {
-	// 	socket.send($('#myMessage').val());
-	// 	$('#myMessage').val('');
-	// });
+	
 
 });

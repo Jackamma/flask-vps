@@ -65,6 +65,12 @@ def realSockDisconnect():
 		onlineUsers.pop(curr_id)
 		emit('updatePlayers', onlineUsers, broadcast=True)
 
+@socketio.on('real_connect')
+def sockConnect():
+	if request.args.get('id'):
+		onlineUsers[request.args.get('id')] = request.args.get('first_name')
+		emit('updatePlayers', onlineUsers, broadcast=True)
+
 @socketio.on('disconnect')
 def sockDisconnect():
 	# print('\n+++++++++++', 'disconnesso', '+++++++++++\n')
