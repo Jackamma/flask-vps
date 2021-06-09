@@ -3,6 +3,7 @@ from flask import Flask, render_template, request
 import peewee, os, hmac, time
 from hashlib import sha256
 from flask_socketio import SocketIO, send, emit
+from random import randint
 
 app = Flask(__name__)
 
@@ -14,6 +15,28 @@ db = peewee.SqliteDatabase(
 		'stats.db'
 	)
 )
+
+maxPadding = 40
+minPadding = -40
+horses = [{'name':'Cuore', 'position':0, 'number':1}, {'name':'Quadro', 'position':0, 'number':2}, {'name':'Fiore', 'position':0, 'number':3}, {'name':'Picche', 'position':0, 'number':4}]
+
+class Horse:
+	def __init__(self, args):
+		self.position = minPadding
+		self.name = args['name']
+		self.number = args['number']
+		
+	def addPosition(self):
+		if randint(1, 10) == 1:
+			n=1
+		elif randint(1,3) == 1:
+			n=0.5
+		else:
+			n=0.1
+		toAdd = n
+		self.position += toAdd
+		#print('Nuova posizione:',self.position)
+		return self.position
 
 class visits(peewee.Model):
 	number = peewee.IntegerField()
@@ -47,6 +70,7 @@ def home():
 	return render_template('index.html')
 
 onlineUsers = {}
+isGameActive = False
 
 @socketio.on('connect')
 def sockConnect():
@@ -79,6 +103,34 @@ def sockDisconnect():
 		onlineUsers.pop(curr_id)
 		emit('updatePlayers', onlineUsers, broadcast=True)
 		# print('+++++++++++', onlineUsers, '+++++++++++')
+
+@socketio.on('startGame')
+def startGame():
+	emit('startGame', broadcast=True)
+	# print('-------------- START GAME --------------')
+	global isGameActive
+	isGameActive = True
+	horseList = []
+	for h in horses:
+		horseList.append(Horse(h))
+	winnerHorses = []
+	while len(winnerHorses) < 4:
+		JShorseList = []
+		for h in horseList:
+			newPos = h.addPosition()
+			n = h.number
+			if newPos >= maxPadding:
+				h.position = maxPadding
+				if h.name not in winnerHorses:
+					winnerHorses.append(h.name)
+				# winnerHorses[h.number] = h.name
+			JShorseList.append(h.position)
+
+		time.sleep(0.01)
+			
+		emit('runRace', JShorseList, broadcast=True)
+
+	emit('finishRace', winnerHorses, broadcast=True)
 
 # @socketio.on('updatePlayers')
 # def handleMessage(players):

@@ -21,7 +21,7 @@ $(document).ready(function() {
 		}, false);
 
 		socket.on('updatePlayers', function(players){
-			console.log(players);
+			// console.log(players);
 			$("#players").empty();
 			var i = 0;
 			for (var p in players){
@@ -30,13 +30,51 @@ $(document).ready(function() {
 			}
 			$("#nPlayers").text(i+'');
 
-			if (i > 1){
+			if (i >= 1){
 				$("#startIppo").attr('disabled', false);
 				$("#startIppo").attr('hidden', false);
 			} else {
 				$("#startIppo").attr('disabled', true);
 				$("#startIppo").attr('hidden', true);
 			}
+		});
+
+		$("#startIppo").click(function(){
+			socket.emit('startGame');
+		});
+
+		socket.on('startGame', function(){
+			$("#startIppo").attr('disabled', true);
+			$("#startIppo").attr('hidden', true);
+			$("#raceBg").attr('hidden', false);
+		});
+
+		socket.on('runRace', function(horseList){
+			// console.log('start!');
+			// console.log(horseList);
+
+			$("#horse1").css('left', horseList[0]+'%');
+			$("#horse2").css('left', horseList[1]+'%');
+			$("#horse3").css('left', horseList[2]+'%');
+			$("#horse4").css('left', horseList[3]+'%');
+			
+			// for (var z=0; z < 95; z+=0.1){
+			// 	setTimeout(function(z){ 
+			// 		$("#horse1").css('padding-left', z+'%');
+			// 		$("#horse2").css('padding-left', z+'%');
+			// 		$("#horse3").css('padding-left', z+'%');
+			// 		$("#horse4").css('padding-left', z+'%');
+			// }, z*100, z);
+				// console.log(i);
+			// }
+		});
+
+		socket.on('finishRace', function(winnerList){
+			$(".results").attr('hidden', false);
+			$("#first").text(winnerList[0]);
+			$("#second").text(winnerList[1]);
+			$("#third").text(winnerList[2]);
+			$("#fourth").text(winnerList[3]);
 		});
 
 		// $('#startIppo').on('click', function() {
