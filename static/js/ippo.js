@@ -1,3 +1,4 @@
+var isGameActive = false;
 
 $(document).ready(function() {
 
@@ -32,7 +33,7 @@ $(document).ready(function() {
 
 			var minPlayer = window.location.hostname == '127.0.0.1' ? 1 : 2;
 
-			if (i >= minPlayer){
+			if ((i >= minPlayer || user == '25571068' || user == '175104816') && !isGameActive){
 				$("#startIppo").attr('disabled', false);
 				$("#startIppo").attr('hidden', false);
 			} else {
@@ -49,6 +50,7 @@ $(document).ready(function() {
 			$("#startIppo").attr('disabled', true);
 			$("#startIppo").attr('hidden', true);
 			$("#raceBg").attr('hidden', false);
+			isGameActive = true;
 		});
 
 		socket.on('runRace', function(horseList){
@@ -72,6 +74,10 @@ $(document).ready(function() {
 		});
 
 		socket.on('finishRace', function(winnerList){
+			isGameActive = false;
+			$("#startIppo").attr('disabled', false);
+			$("#startIppo").attr('hidden', false);
+			$("#raceBg").attr('hidden', true);
 			$(".results").attr('hidden', false);
 			$("#first").text(winnerList[0]);
 			$("#second").text(winnerList[1]);

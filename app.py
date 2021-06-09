@@ -3,7 +3,7 @@ from flask import Flask, render_template, request
 import peewee, os, hmac, time
 from hashlib import sha256
 from flask_socketio import SocketIO, send, emit
-from random import randint
+from random import randint, uniform
 
 app = Flask(__name__)
 
@@ -27,13 +27,14 @@ class Horse:
 		self.number = args['number']
 		
 	def addPosition(self):
-		if randint(1, 10) == 1:
-			n=0.5
-		elif randint(1,3) == 1:
-			n=0.2
-		else:
-			n=0.1
-		toAdd = n
+
+		# if randint(1, 10) == 1:
+		# 	n=0.5
+		# elif randint(1,3) == 1:
+		# 	n=0.2
+		# else:
+		# 	n=0.1
+		toAdd = uniform(0.1,0.5)
 		self.position += toAdd
 		#print('Nuova posizione:',self.position)
 		return self.position
@@ -106,9 +107,11 @@ def sockDisconnect():
 
 @socketio.on('startGame')
 def startGame():
+	global isGameActive
+	if isGameActive:
+		return
 	emit('startGame', broadcast=True)
 	# print('-------------- START GAME --------------')
-	global isGameActive
 	isGameActive = True
 	horseList = []
 	for h in horses:
@@ -131,6 +134,7 @@ def startGame():
 		emit('runRace', JShorseList, broadcast=True)
 
 	emit('finishRace', winnerHorses, broadcast=True)
+	isGameActive = False
 
 # @socketio.on('updatePlayers')
 # def handleMessage(players):
