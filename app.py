@@ -28,9 +28,9 @@ class Horse:
 		
 	def addPosition(self):
 		if randint(1, 10) == 1:
-			n=1
-		elif randint(1,3) == 1:
 			n=0.5
+		elif randint(1,3) == 1:
+			n=0.2
 		else:
 			n=0.1
 		toAdd = n
@@ -126,7 +126,7 @@ def startGame():
 				# winnerHorses[h.number] = h.name
 			JShorseList.append(h.position)
 
-		time.sleep(0.01)
+		time.sleep(0.05)
 			
 		emit('runRace', JShorseList, broadcast=True)
 

@@ -30,7 +30,9 @@ $(document).ready(function() {
 			}
 			$("#nPlayers").text(i+'');
 
-			if (i >= 1){
+			var minPlayer = window.location.hostname == '127.0.0.1' ? 1 : 2;
+
+			if (i >= minPlayer){
 				$("#startIppo").attr('disabled', false);
 				$("#startIppo").attr('hidden', false);
 			} else {
