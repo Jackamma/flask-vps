@@ -18,13 +18,21 @@ db = peewee.SqliteDatabase(
 
 maxPadding = 40
 minPadding = -40
-horses = [{'name':'Cuore', 'position':0, 'number':1}, {'name':'Quadro', 'position':0, 'number':2}, {'name':'Fiore', 'position':0, 'number':3}, {'name':'Picche', 'position':0, 'number':4}]
+horses = [{'name':'Cavallo', 'position':0, 'number':0},
+			{'name':'Reinbo', 'position':0, 'number':1},
+			{'name':'Unicorno', 'position':0, 'number':2},
+			{'name':'Fantino', 'position':0, 'number':3}]
+
+minPos = 0.001
+maxPos = 0.5
+timeDelay = 0.1
 
 class Horse:
 	def __init__(self, args):
 		self.position = minPadding
 		self.name = args['name']
 		self.number = args['number']
+		self.multiplier = round(uniform(1,2), 2)
 		
 	def addPosition(self):
 
@@ -34,8 +42,8 @@ class Horse:
 		# 	n=0.2
 		# else:
 		# 	n=0.1
-		toAdd = uniform(0.1,0.5)
-		self.position += toAdd
+		toAdd = uniform(minPos,maxPos)
+		self.position += toAdd * self.multiplier
 		#print('Nuova posizione:',self.position)
 		return self.position
 
@@ -109,6 +117,8 @@ def sockDisconnect():
 def startGame():
 	global isGameActive
 	if isGameActive:
+		emit('startGame')
+		# emit('gameAlreadyStarted')
 		return
 	emit('startGame', broadcast=True)
 	# print('-------------- START GAME --------------')
@@ -116,24 +126,38 @@ def startGame():
 	horseList = []
 	for h in horses:
 		horseList.append(Horse(h))
+	horsesRace = {}
 	winnerHorses = []
-	while len(winnerHorses) < 4:
-		JShorseList = []
+	winnerHorsesList = []
+
+	for h in horseList:
+		if h.name not in horsesRace:
+			horsesRace[h.name] = []
+
+	start = time.time()
+	i = 0
+	while len(winnerHorsesList) < 4:
+		i+=1
+		# JShorseList = []
 		for h in horseList:
-			newPos = h.addPosition()
-			n = h.number
-			if newPos >= maxPadding:
-				h.position = maxPadding
-				if h.name not in winnerHorses:
-					winnerHorses.append(h.name)
-				# winnerHorses[h.number] = h.name
-			JShorseList.append(h.position)
+			if h.name not in winnerHorsesList:
+				newPos = h.addPosition()
+				if newPos > maxPadding:
+					newPos = maxPadding
+				horsesRace[h.name].append(newPos)
+				if newPos == maxPadding:
+					# horsesRace[h.name].append(newPos)
+					# h.position = maxPadding
+					winnerHorsesList.append(h.name)
+					# winnerHorses.append([h.name, round(time.time()-start, 2)])
+					winnerHorses.append({'name':h.name, 'time':round(i*timeDelay, 2), 'multiplier':h.multiplier, 'race':horsesRace[h.name], 'number':h.number})
+			# JShorseList.append(h.position)
 
-		time.sleep(0.05)
+		# time.sleep(timeDelay)
 			
-		emit('runRace', JShorseList, broadcast=True)
+		# emit('runRace', JShorseList, broadcast=True)
 
-	emit('finishRace', winnerHorses, broadcast=True)
+	emit('sendRace', winnerHorses, broadcast=True)
 	isGameActive = False
 
 # @socketio.on('updatePlayers')
@@ -144,7 +168,6 @@ def startGame():
 
 @app.route("/ippodromo/")
 def ippo():
-	global onlineUsers
 	isDataValid = False
 	isDataExpired = False
 	if request.args.get('hash'):
