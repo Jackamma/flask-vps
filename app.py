@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request
-import peewee, os, hmac, time
+import peewee, os, hmac, time, uuid
 from hashlib import sha256
 from flask_socketio import SocketIO, send, emit
 from random import randint, uniform
@@ -113,18 +113,22 @@ def sockDisconnect():
 		emit('updatePlayers', onlineUsers, broadcast=True)
 		# print('+++++++++++', onlineUsers, '+++++++++++')
 
+allGames = {}
+
 @socketio.on('startGame')
 def startGame():
-	global isGameActive
+	global isGameActive, allGames
 	if isGameActive:
 		emit('startGame')
 		# emit('gameAlreadyStarted')
 		return
-	emit('startGame', broadcast=True)
-	for i in range(10,0,-1):
-		emit('startCountdown', i, broadcast=True)
-		# if i != 0:
-		time.sleep(1)
+	gameCode = uuid.uuid4().hex
+	emit('startGame', gameCode, broadcast=True)
+
+	# for i in range(10,0,-1):
+	# 	emit('startCountdown', i, broadcast=True)
+	# 	# if i != 0:
+	# 	time.sleep(1)
 
 	
 	# print('-------------- START GAME --------------')
@@ -136,12 +140,14 @@ def startGame():
 	horsesRace = {}
 	winnerHorses = []
 	winnerHorsesList = []
+	raceResults = {}
 
 	for h in horseList:
 		if h.name not in horsesRace:
 			horsesRace[h.name] = []
 
 	start = time.time()
+	order = 0
 	i = 0
 	while len(winnerHorsesList) < 4:
 		i+=1
@@ -158,11 +164,15 @@ def startGame():
 					winnerHorsesList.append(h.name)
 					# winnerHorses.append([h.name, round(time.time()-start, 2)])
 					winnerHorses.append({'name':h.name, 'time':round(i*timeDelay, 2), 'multiplier':h.multiplier, 'race':horsesRace[h.name], 'number':h.number})
+					raceResults[str(h.number)] = order
+					order+=1
 			# JShorseList.append(h.position)
 
 		# time.sleep(timeDelay)
 			
 		# emit('runRace', JShorseList, broadcast=True)
+
+	allGames[gameCode] = raceResults
 
 	emit('sendRace', winnerHorses, broadcast=True)
 	isGameActive = False
@@ -221,13 +231,14 @@ bets = {}
 
 @app.route('/sendBet',methods=['POST'])
 def sendBet():
+	global allGames
 	if request.method=='POST':
 		res = request.get_json(force=True)
 		print('----------------------')
 		horseN = res['bet'].replace('betHorse', '')
 		bets[res['user']] = horseN
-		print(bets)
-		return ''
+		print(allGames)
+		return str(allGames[res['code']][horseN])
 		# return '{"Content-Type": "application/json","test":"test!!"}'
 	# else:    
 	# 	return render_template('index.html')

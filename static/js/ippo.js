@@ -50,15 +50,24 @@ $(document).ready(function() {
 		// 	alert('')
 		// });
 
+		var betResult;
+
 		$(".betButt").click(function(){
 			// var abc = $(this).closest(".head-div").attr("id");
 			var currId = this.id+'';
-			$.post( "/sendBet", '{ "user":"'+user+'", "bet":"'+currId+'" }');
+			var posting = $.post("/sendBet", '{ "user":"'+user+'", "bet":"'+currId+'", "code":"'+gameCode+'" }');
+			posting.done(function(res){
+				console.log('Risultato: '+res);
+				betResult = res;
+			});
 			$(".betButt").attr('hidden', true);
 			$('#'+currId.replace('betHorse', 'name')).css('color', 'green');
 		});
 
-		socket.on('startGame', function(){
+		var gameCode;
+		socket.on('startGame', function(code){
+			if (code)
+				gameCode = code;
 			// isGameActive = true;
 			$("#startIppo").attr('disabled', true);
 			$("#startIppo").attr('hidden', true);
@@ -69,9 +78,6 @@ $(document).ready(function() {
 		});
 
 		socket.on('startCountdown', function(num){
-			if (num == 0)
-				num = 'VIA!';
-			// console.log(num);
 			$("#countdown").text(num+'');
 		});
 
@@ -91,38 +97,59 @@ $(document).ready(function() {
 		socket.on('sendRace', function(winnerList){
 			// console.log(winnerList);
 			if (!isGameActive){
-				$("#raceBg").attr('hidden', false);
-				$(".results").attr('hidden', true);
-				$("#beforeStart").attr('hidden', true);
+				
 				isGameActive = true;
+
+				var isCountdownActive = true;
+				var i_countdown = 10;
+				var countdown = setInterval(() => {
+					i_countdown--;
+					if (i_countdown){
+						$("#countdown").text(i_countdown+'');
+					} else {
+						clearInterval(countdown);
+						isCountdownActive = false;
+						$("#beforeStart").attr('hidden', true);
+						$("#raceBg").attr('hidden', false);
+						$(".results").attr('hidden', true);
+						$("#countdown").text('10');
+					}
+				}, 1000);
+
 				var race = setInterval(function(){
 					// console.log(winnerList[0]['race']);
-					if (winnerList[0]['race'].length > 0 || winnerList[1]['race'].length > 0 || winnerList[2]['race'].length > 0 || winnerList[3]['race'].length > 0){
-						for (var i = 0; i < 4; i++){
-							if (winnerList[i]['race'].length > 0){
-								$("#horse"+winnerList[i]['number']).css('left', winnerList[i]['race'][0]+'%');
-								winnerList[i]['race'].shift();
+					if (!isCountdownActive){
+						if (winnerList[0]['race'].length > 0 || winnerList[1]['race'].length > 0 || winnerList[2]['race'].length > 0 || winnerList[3]['race'].length > 0){
+							for (var i = 0; i < 4; i++){
+								if (winnerList[i]['race'].length > 0){
+									$("#horse"+winnerList[i]['number']).css('left', winnerList[i]['race'][0]+'%');
+									winnerList[i]['race'].shift();
 
-								// Non funziona, lascia spazio e rompe tutto, trovare altra soluzione
-								if (winnerList[i]['race'].length == 0){
-									// $("#horse"+winnerList[i]['number']).attr('hidden', true);
-									$("#horse"+winnerList[i]['number']).css('visibility', 'hidden');
+									// Non funziona, lascia spazio e rompe tutto, trovare altra soluzione
+									if (winnerList[i]['race'].length == 0){
+										// $("#horse"+winnerList[i]['number']).attr('hidden', true);
+										$("#horse"+winnerList[i]['number']).css('visibility', 'hidden');
+									}
 								}
 							}
+						} else {
+							clearInterval(race);
+							isGameActive = false;
+							$("#startIppo").attr('disabled', false);
+							$("#startIppo").attr('hidden', false);
+							$("#raceBg").attr('hidden', true);
+							$(".results").attr('hidden', false);
+							if (betResult == '0')
+								$("#betResult").text('HAI VINTO!');
+							else
+								$("#betResult").text('Hai scommesso sul cavallo sbagliato :(');
+							$(".horse").css('visibility', 'visible');
+							$(".horse").css('left', '-40%');
+							$("#first").text(winnerList[0]['name']+' ('+winnerList[0]['time']+' s) [multiplier '+winnerList[0]['multiplier']+'x]');
+							$("#second").text(winnerList[1]['name']+' ('+winnerList[1]['time']+' s) [multiplier '+winnerList[1]['multiplier']+'x]');
+							$("#third").text(winnerList[2]['name']+' ('+winnerList[2]['time']+' s) [multiplier '+winnerList[2]['multiplier']+'x]');
+							$("#fourth").text(winnerList[3]['name']+' ('+winnerList[3]['time']+' s) [multiplier '+winnerList[3]['multiplier']+'x]');
 						}
-					} else {
-						clearInterval(race);
-						isGameActive = false;
-						$("#startIppo").attr('disabled', false);
-						$("#startIppo").attr('hidden', false);
-						$("#raceBg").attr('hidden', true);
-						$(".results").attr('hidden', false);
-						$(".horse").css('visibility', 'visible');
-						$(".horse").css('left', '-40%');
-						$("#first").text(winnerList[0]['name']+' ('+winnerList[0]['time']+' s) [multiplier '+winnerList[0]['multiplier']+'x]');
-						$("#second").text(winnerList[1]['name']+' ('+winnerList[1]['time']+' s) [multiplier '+winnerList[1]['multiplier']+'x]');
-						$("#third").text(winnerList[2]['name']+' ('+winnerList[2]['time']+' s) [multiplier '+winnerList[2]['multiplier']+'x]');
-						$("#fourth").text(winnerList[3]['name']+' ('+winnerList[3]['time']+' s) [multiplier '+winnerList[3]['multiplier']+'x]');
 					}
 				}, 100);
 			}
