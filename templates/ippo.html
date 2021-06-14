@@ -38,6 +38,12 @@
         font-weight: bold;
         margin-top: 10px;
     }
+
+    .betButt{
+        position: absolute;
+        margin-top: -38px;
+        margin-left: 70px;
+    }
 </style>
 {% endblock %}
 
@@ -62,6 +68,21 @@
         <p><b>Giocatori online: <span id="nPlayers"></span></b></p>
         <ul id="players" style="list-style-type: none; padding-left: 0px;"></ul>
         <input class="btn btn-primary" type="button" value="START" id="startIppo" hidden>
+
+        <div hidden id="beforeStart">
+            <p style="font-weight: bold; font-size: 10em; margin-top: -30px;" id="countdown">10</p>
+            <p style="margin-top: 10px;">Stanno per correre i cavalli:</p>
+            <ul style="list-style-type: none; padding-left: 0px; width: 10%; margin-left: auto; margin-right: auto; margin-top: -10px;">
+                <li class="horseName" id="name0" style="margin-bottom: 10px">CAVALLO</li>
+                <button type="button" id="betHorse0" class="betButt btn btn-secondary btn-sm">SCOMMETTI</button>
+                <li class="horseName" id="name1" style="margin-bottom: 10px">REINBO</li>
+                <button type="button" id="betHorse1" class="betButt btn btn-secondary btn-sm">SCOMMETTI</button>
+                <li class="horseName" id="name2" style="margin-bottom: 10px">UNICORNO</li>
+                <button type="button" id="betHorse2" class="betButt btn btn-secondary btn-sm">SCOMMETTI</button>
+                <li class="horseName" id="name3" style="margin-bottom: 10px">FANTINO</li>
+                <button type="button" id="betHorse3" class="betButt btn btn-secondary btn-sm">SCOMMETTI</button>
+            </ul>
+        </div>
 
         <div hidden id="raceBg" style="position: relative; display:block; background-color: #00701e; border-radius: 25px; width: 100%; height: 313px; margin-left: auto; margin-right: auto; margin-top: 30px;">
             <div style="position: absolute; width: 3px; height: 313px; background-color: white; left: 92%;"></div>

@@ -121,8 +121,15 @@ def startGame():
 		# emit('gameAlreadyStarted')
 		return
 	emit('startGame', broadcast=True)
+	for i in range(10,0,-1):
+		emit('startCountdown', i, broadcast=True)
+		# if i != 0:
+		time.sleep(1)
+
+	
 	# print('-------------- START GAME --------------')
 	isGameActive = True
+
 	horseList = []
 	for h in horses:
 		horseList.append(Horse(h))
@@ -210,19 +217,20 @@ def ippo():
 	# nOnlineUsers = len(onlineUsers)
 	return render_template('ippo.html', isDataValid=isDataValid, first_name=first_name, isDataExpired=isDataExpired)
 
-@app.route('/onlinedata',methods=['GET','POST'])
-def checkOnline():
-	global onlineUsers
+bets = {}
+
+@app.route('/sendBet',methods=['POST'])
+def sendBet():
 	if request.method=='POST':
-		res = request.get_json()
-		onlineUsers.pop(res['id'])
-		# print(res['id'])
-		# print(onlineUsers)
-		# for i in request.data:
-		# 	print(request.data)
-		return '{"Content-Type": "application/json","test":"test!!"}'
-	else:    
-		return render_template('index.html')
+		res = request.get_json(force=True)
+		print('----------------------')
+		horseN = res['bet'].replace('betHorse', '')
+		bets[res['user']] = horseN
+		print(bets)
+		return ''
+		# return '{"Content-Type": "application/json","test":"test!!"}'
+	# else:    
+	# 	return render_template('index.html')
 
 @app.route("/donne/")
 def donne():
