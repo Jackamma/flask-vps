@@ -39,7 +39,7 @@ $(document).ready(function() {
 
 		function updateMessage(msg, isService){
 			var div = document.createElement('div');
-			div.style = 'position: relative; float: left; margin-left: 10px;';
+			div.style = 'position: relative; float: left; margin-left: 10px; text-align: left;';
 			var img = document.createElement("img");
 			img.src = msg['propic'];
 			img.className += "profile_img";
