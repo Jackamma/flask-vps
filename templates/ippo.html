@@ -44,6 +44,93 @@
         margin-top: -38px;
         margin-left: 70px;
     }
+
+    #chatBox{
+        position: relative;
+        border: 3px solid white;
+        height: 300px;
+        width: 70%;
+        background-color: rgb(68, 68, 68);
+        border-radius: 25px;
+        margin: auto;
+        margin-top: 30px;
+    }
+
+    #inputTextBox{
+        background-color: gray;
+        height: 50px;
+        width: 100%;
+        border-bottom-left-radius: 22px;
+        border-bottom-right-radius: 22px;
+        position: absolute;
+        bottom: 0px;
+        border-top: 1px solid white;
+    }
+
+    #inputText{
+        position: relative;
+        top: 25%;
+        background-color: transparent;
+        text-decoration: white;
+        color: rgb(63, 63, 63);
+        font-weight: bold;
+        border: 0px;
+        width: 90%;
+    }
+
+    #inputText:focus{
+        outline: none;
+    }
+
+    #inputText:hover{
+        cursor: default;
+    }
+
+    #inputText::placeholder{
+        color: white;
+        opacity: 1;
+    }
+    
+    #messagesBox{
+        /* background-color: white; */
+        position: absolute;
+        width: 100%;
+        height: 240px;
+        /* min-height: 240px; */
+        overflow: hidden;
+    }
+
+    ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+    background:black; 
+    border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+    background:rgb(54, 56, 58); 
+    }
+
+    .message{
+        text-align: left;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .profile_img{
+        border-radius: 25px;
+        height: 20px;
+        width: auto;
+        left: 10px;
+    }
 </style>
 {% endblock %}
 
@@ -68,6 +155,20 @@
         <p><b>Giocatori online: <span id="nPlayers"></span></b></p>
         <ul id="players" style="list-style-type: none; padding-left: 0px;"></ul>
         <input class="btn btn-primary" type="button" value="START" id="startIppo" hidden>
+
+        <div id="chatBox">
+            <div id="messagesBox" class="overflow-auto">
+                <!-- <p style="padding: 5px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quaerat perspiciatis. Dolorum eaque debitis non fuga beatae, enim fugiat possimus nam asperiores doloremque quos eligendi illum, error laudantium harum natus? Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt, deserunt et obcaecati ipsa error quas fugiat perferendis, eius delectus nihil quos eveniet porro at quibusdam veniam laudantium ad, fugit earum! Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, similique officia? Corporis provident odio temporibus aperiam nam at voluptatibus ullam quas consequatur dolorum quo molestiae molestias quidem magni, harum porro. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tenetur quae sapiente repellat nihil nostrum hic et? Fugit dolor dolorem, deserunt vel, maiores neque nihil iste odio asperiores sint nobis eos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet quas explicabo necessitatibus rem voluptate ab a porro! Facilis reiciendis ipsam harum. Necessitatibus, cumque quos. Inventore corrupti placeat quam nam delectus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor veniam expedita eos facilis nihil magnam consectetur deleniti nam saepe cupiditate? Eos iure, tempora quisquam dolorem omnis cumque distinctio sed voluptate. Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus vitae amet commodi! Aspernatur velit ipsam nemo optio eaque illo ab reprehenderit, enim, pariatur, earum dolorum minus suscipit voluptatem libero iure. Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque aliquid explicabo nobis. Adipisci, incidunt ab minima id dicta necessitatibus quasi facilis hic, libero, debitis atque culpa dolor sequi voluptas fugiat? Lorem ipsum dolor sit amet consectetur, adipisicing elit. Adipisci deleniti tenetur nemo nisi libero fuga? Aspernatur fuga, quas, quam optio officiis quasi autem dignissimos nostrum ut voluptas facilis. Ab, nisi! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ea illo est quo deserunt vitae dolorem reiciendis ipsam harum architecto natus asperiores provident quibusdam expedita consequuntur, ducimus laborum neque officia eaque. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolores natus asperiores eum! Incidunt illo enim a excepturi vero eligendi aliquam. Tempore, autem aliquid! Eaque, nam non! Nesciunt, possimus! Eligendi, reiciendis.</p> -->
+            </div>
+            <div id="inputTextBox">
+                <input type="text" id="inputText" name="text" placeholder="Messaggio">
+                <div style="position: absolute; right: 10px; bottom: 10px;">
+                    <button id="sendButton" type="button" style="background-color: transparent; border: none;"><svg style="margin-bottom:4;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-arrow-right-circle">
+                        <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+                    </svg></button>
+                </div>
+            </div>
+        </div>
 
         <div hidden id="beforeStart">
             <p style="font-weight: bold; font-size: 10em; margin-top: -30px;" id="countdown">10</p>

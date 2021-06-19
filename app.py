@@ -227,6 +227,14 @@ def ippo():
 	# nOnlineUsers = len(onlineUsers)
 	return render_template('ippo.html', isDataValid=isDataValid, first_name=first_name, isDataExpired=isDataExpired)
 
+@socketio.on('sendMessage')
+def sendMessage(msg):
+	emit('updateMessage', msg, broadcast=True)
+
+@socketio.on('sendServiceMessage')
+def sendMessage(msg):
+	emit('updateServiceMessage', msg, broadcast=True)
+
 bets = {}
 
 @app.route('/sendBet',methods=['POST'])

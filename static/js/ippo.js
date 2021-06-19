@@ -4,14 +4,71 @@ $(document).ready(function() {
 
     if (isDataValid == 'True'){
 
+		$('#sendButton').on('click', function(){
+			// console.log($('#inputText').val());
+			if ($('#inputText').val().trim()){
+				socket.emit('sendMessage', {'text':first_name+': '+$('#inputText').val().trim(), 'propic':propic});
+			}
+			$('#inputText').val('');
+		});
+
 		const queryString = window.location.search;
 
 		const urlParams = new URLSearchParams(queryString);
 
 		const user = urlParams.get('id')
 		const first_name = urlParams.get('first_name')
+		const propic = urlParams.get('photo_url');
 
 		var socket = io.connect(window.location.origin+'', {query: 'id='+user+'&first_name='+first_name});
+
+		var input = document.getElementById("inputText");
+
+		// Execute a function when the user releases a key on the keyboard
+		if (input){
+			input.addEventListener("keydown", function(event) {
+				// Number 13 is the "Enter" key on the keyboard
+				if (event.key === 'Enter') {
+					// Cancel the default action, if needed
+					event.preventDefault();
+					// Trigger the button element with a click
+					document.getElementById("sendButton").click();
+				}
+			});
+		}
+
+		function updateMessage(msg, isService){
+			var div = document.createElement('div');
+			div.style = 'position: relative; float: left; margin-left: 10px;';
+			var img = document.createElement("img");
+			img.src = msg['propic'];
+			img.className += "profile_img";
+			var tag = document.createElement("span");
+			var text = document.createTextNode(msg['text']);
+			if (isService){
+				tag.style.fontStyle = 'italic';
+				tag.style.fontWeight = 'bold';
+				tag.style.color = 'green';
+			}
+			tag.appendChild(text);
+			tag.className += "message";
+			var messagesBox = document.getElementById("messagesBox");
+			div.appendChild(img);
+			div.appendChild(tag);
+			messagesBox.appendChild(div);
+			messagesBox.appendChild(document.createElement("br"));
+			// $("#messagesBox").animate({ scrollTop: 9999999 }, 400);
+			// console.log(document.getElementById('messagesBox').scrollHeight);
+			$("#messagesBox").animate({ scrollTop: document.getElementById('messagesBox').scrollHeight }, 400);
+		}
+
+		socket.on('updateMessage', function(msg){
+			updateMessage(msg);
+		});
+
+		socket.on('updateServiceMessage', function(msg){
+			updateMessage(msg, true);
+		});
 		  
 		document.addEventListener("visibilitychange", function(){
 			if (document.hidden){
@@ -54,14 +111,16 @@ $(document).ready(function() {
 
 		$(".betButt").click(function(){
 			// var abc = $(this).closest(".head-div").attr("id");
+			var horseNames = {'betHorse0':'CAVALLO', 'betHorse1':'REINBO', 'betHorse2':'UNICORNO', 'betHorse3':'FANTINO'};
 			var currId = this.id+'';
 			var posting = $.post("/sendBet", '{ "user":"'+user+'", "bet":"'+currId+'", "code":"'+gameCode+'" }');
 			posting.done(function(res){
-				console.log('Risultato: '+res);
+				// console.log('Risultato: '+res);
 				betResult = res;
 			});
 			$(".betButt").attr('hidden', true);
 			$('#'+currId.replace('betHorse', 'name')).css('color', 'green');
+			socket.emit('sendServiceMessage', {'text':first_name+' ha scommesso su '+horseNames[this.id], 'propic':propic});
 		});
 
 		var gameCode;
