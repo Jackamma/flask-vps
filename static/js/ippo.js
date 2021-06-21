@@ -38,13 +38,18 @@ $(document).ready(function() {
 		}
 
 		function updateMessage(msg, isService){
+			var date = new Date();
+			var seconds = date.getSeconds();
+			var minutes = date.getMinutes();
+			var hour = date.getHours();
+
 			var div = document.createElement('div');
 			div.style = 'position: relative; float: left; margin-left: 10px; text-align: left;';
 			var img = document.createElement("img");
 			img.src = msg['propic'];
 			img.className += "profile_img";
 			var tag = document.createElement("span");
-			var text = document.createTextNode(msg['text']);
+			var text = document.createTextNode('['+hour+':'+minutes+':'+seconds+'] '+msg['text']);
 			if (isService){
 				tag.style.fontStyle = 'italic';
 				tag.style.fontWeight = 'bold';
