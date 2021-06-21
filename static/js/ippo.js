@@ -39,9 +39,18 @@ $(document).ready(function() {
 
 		function updateMessage(msg, isService){
 			var date = new Date();
-			var seconds = date.getSeconds();
-			var minutes = date.getMinutes();
-			var hour = date.getHours();
+			var seconds = date.getSeconds()+'';
+			var minutes = date.getMinutes()+'';
+			var hour = date.getHours()+'';
+
+			if (seconds.length == 1)
+				seconds = '0'+seconds;
+			
+			if (minutes.length == 1)
+				minutes = '0'+minutes;
+
+			if (hour.length == 1)
+				hour = '0'+hour;
 
 			var div = document.createElement('div');
 			div.style = 'position: relative; float: left; margin-left: 10px; text-align: left;';
