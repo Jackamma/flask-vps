@@ -75,7 +75,6 @@ def home():
 		n = 1
 		new = visits.create(number=1, page='home')
 		new.save()
-	# print(n)
 	return render_template('index.html')
 
 onlineUsers = {}
