@@ -36,12 +36,6 @@ class Horse:
 		
 	def addPosition(self):
 
-		# if randint(1, 10) == 1:
-		# 	n=0.5
-		# elif randint(1,3) == 1:
-		# 	n=0.2
-		# else:
-		# 	n=0.1
 		toAdd = uniform(minPos,maxPos)
 		self.position += toAdd * self.multiplier
 		#print('Nuova posizione:',self.position)
@@ -75,7 +69,6 @@ def home():
 		n = 1
 		new = visits.create(number=1, page='home')
 		new.save()
-	# print(n)
 	return render_template('index.html')
 
 onlineUsers = {}
@@ -84,8 +77,6 @@ isGameActive = False
 @socketio.on('connect')
 def sockConnect():
 	# print('\n+++++++++++', 'connesso', '+++++++++++\n')
-	# send(msg, broadcast=True)
-	# print(request.args.get('id'))
 	if request.args.get('id'):
 		onlineUsers[request.args.get('id')] = request.args.get('first_name')
 		emit('updatePlayers', onlineUsers, broadcast=True)
@@ -120,15 +111,9 @@ def startGame():
 	global isGameActive, allGames
 	if isGameActive:
 		emit('startGame')
-		# emit('gameAlreadyStarted')
 		return
 	gameCode = uuid.uuid4().hex
 	emit('startGame', gameCode, broadcast=True)
-
-	# for i in range(10,0,-1):
-	# 	emit('startCountdown', i, broadcast=True)
-	# 	# if i != 0:
-	# 	time.sleep(1)
 
 	
 	# print('-------------- START GAME --------------')
@@ -193,7 +178,6 @@ def ippo():
 			strToAdd = i+'='+request.args[i]
 			if strToAdd not in dataArray and i != 'hash':
 				dataArray.append(i+'='+request.args[i])
-				# print(strToAdd)
 		dataArray.sort()
 		hashString = '\n'.join(dataArray)
 		secret = bot_token.encode()
@@ -220,7 +204,6 @@ def ippo():
 		isDataValid = True
 		isDataExpired = False
 
-	# print('isDataValid = '+str(isDataValid))
 	first_name = request.args.get('first_name')
 	# if isDataValid and not isDataExpired:
 	# 	onlineUsers[request.args.get('id')] = first_name
